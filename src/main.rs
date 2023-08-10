@@ -3,9 +3,8 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::Duration;
 
-use chrono::Datelike;
+use chrono::{Datelike, Local};
 use chrono::Timelike;
-use chrono::Utc;
 use clap::{Parser, Subcommand};
 use serialport::{available_ports, SerialPortType, UsbPortInfo};
 
@@ -162,15 +161,18 @@ fn print_optional_info(label: &str, opt: &Option<String>) {
 }
 
 fn generate_timestamp() -> String {
-    let now = Utc::now();
+    let now = Local::now();
+
     format!(
-        "[{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:03}] ",
+        "{RESET}[{GREEN}{:04}-{:02}-{:02} {:02}:{:02}:{:02}.{:03}{RESET}] ",
         now.year(),
         now.month(),
         now.day(),
         now.hour(),
         now.minute(),
         now.second(),
-        now.timestamp_subsec_millis()
+        now.timestamp_subsec_millis(),
+        RESET = "\x1b[0m",
+        GREEN = "\x1b[32m",
     )
 }
